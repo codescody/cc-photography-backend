@@ -2,18 +2,18 @@
 require("dotenv").config();
 
 // Dependencies
-const express = require("express")
-const { default: mongoose } = require("mongoose")
-const cors = require("cors")
-const methodOverride = require("method-override")
-const morgan = require("morgan")
-const { PORT, DATABASE_URL } = process.env
+const express = require("express");
+const { default: mongoose } = require("mongoose");
+const cors = require("cors");
+const methodOverride = require("method-override");
+const morgan = require("morgan");
+const { PORT, DATABASE_URL } = process.env;
 
 // App Object
-const app = express()
+const app = express();
 
 // Database Connection
-mongoose.connect(DATABASE_URL)
+mongoose.connect(DATABASE_URL);
 
 // Connection Events
 mongoose.connection
@@ -29,13 +29,13 @@ mongoose.connection
 
 // Model
 const PrintSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    info: String,
-    price: Number,
-})
+  name: String,
+  image: String,
+  info: String,
+  price: Number,
+});
 
-const Print = mongoose.model("Print", PrintSchema)
+const Print = mongoose.model("Print", PrintSchema);
 
 // Middleware
 app.use(cors()); // prevents cross origin resource sharing errors, allows access to server from all origins i.e. react frontend
@@ -44,17 +44,48 @@ app.use(express.json()); // parse json bodies from request
 app.use(express.urlencoded({ extended: false })); // to use URL encoded
 
 app.get("/", (req, res) => {
-    res.send("hello world")
-})
+  res.send("hello world");
+});
+
+// Index
+app.get("/print", async (req, res) => {
+  try {
+    res.status(200).json(await Print.find({}));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+// Delete
+app.delete("/print/:id", async (req, res) => {
+  try {
+    res.status(200).json(await Print.findByIdAndDelete(req.params.id));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+// Update
+app.put("/print/:id", async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json(
+        await Print.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      );
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
 
 // Create
 app.post("/print", async (req, res) => {
-    try {
-      res.status(200).json(await Print.create(req.body));
-    } catch (error) {
-      res.status(400).json(error);
-    }
-  });
+  try {
+    res.status(200).json(await Print.create(req.body));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
 
 // Server listener
 app.listen(PORT, () => console.log(`Listening on ${PORT} `));
