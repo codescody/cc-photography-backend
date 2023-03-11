@@ -28,14 +28,14 @@ mongoose.connection
   });
 
 // Model
-const PrintSchema = new mongoose.Schema({
+const PictureSchema = new mongoose.Schema({
   name: String,
   image: String,
   info: String,
   price: Number,
 });
 
-const Print = mongoose.model("Print", PrintSchema);
+const Picture = mongoose.model("Picture", PictureSchema);
 
 // Middleware
 app.use(cors()); // prevents cross origin resource sharing errors, allows access to server from all origins i.e. react frontend
@@ -48,30 +48,30 @@ app.get("/", (req, res) => {
 });
 
 // Index
-app.get("/print", async (req, res) => {
+app.get("/picture", async (req, res) => {
   try {
-    res.status(200).json(await Print.find({}));
+    res.status(200).json(await Picture.find({}));
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
 // Delete
-app.delete("/print/:id", async (req, res) => {
+app.delete("/picture/:id", async (req, res) => {
   try {
-    res.status(200).json(await Print.findByIdAndDelete(req.params.id));
+    res.status(200).json(await Picture.findByIdAndDelete(req.params.id));
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
 // Update
-app.put("/print/:id", async (req, res) => {
+app.put("/picture/:id", async (req, res) => {
   try {
     res
       .status(200)
       .json(
-        await Print.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        await Picture.findByIdAndUpdate(req.params.id, req.body, { new: true })
       );
   } catch (error) {
     res.status(400).json(error);
@@ -79,9 +79,9 @@ app.put("/print/:id", async (req, res) => {
 });
 
 // Create
-app.post("/print", async (req, res) => {
+app.post("/picture", async (req, res) => {
   try {
-    res.status(200).json(await Print.create(req.body));
+    res.status(200).json(await Picture.create(req.body));
   } catch (error) {
     res.status(400).json(error);
   }
